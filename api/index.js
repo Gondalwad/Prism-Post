@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import testRoute from './routes/user.route.js'
 const app = express();
 
 //Connecting to database
@@ -11,6 +12,11 @@ mongoose.connect(process.env.MONGOURL).then(()=>{
     console.log(err);
 });
 
-app.listen(3000,()=>{
+/// let server run on specified port
+const port = 3000;
+app.listen(port,()=>{
     console.log("The server is running on port 3000");
 });
+
+//test api
+app.use('/api/user',testRoute);
