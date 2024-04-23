@@ -23,3 +23,13 @@ app.listen(port,()=>{
 //test api
 app.use('/api/user',testRoute);
 app.use('/api/user',signup);
+
+app.use((error,req,res,next)=>{
+    const statusCode = error.statusCode || 500;
+    const message = error.message || 'Internal Server Error';
+    res.status(statusCode).json({
+        success : false,
+        statusCode,
+        message
+    });
+});
