@@ -2,8 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import testRoute from './routes/user.route.js'
+import signup from './routes/auth.route.js'
 const app = express();
 
+app.use(express.json());
 //Connecting to database
 dotenv.config();
 mongoose.connect(process.env.MONGOURL).then(()=>{
@@ -20,3 +22,4 @@ app.listen(port,()=>{
 
 //test api
 app.use('/api/user',testRoute);
+app.use('/api/user',signup);
