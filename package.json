@@ -1,0 +1,15 @@
+{
+  "name": "22_04_2024_prismpost",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sudarshan Gondalwad",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
