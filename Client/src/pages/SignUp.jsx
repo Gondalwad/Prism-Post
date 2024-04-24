@@ -24,6 +24,7 @@ export default function SignUp() {
 
     // Showing error for invalid inputs
     if (!formdata.username || !formdata.email || !formdata.password) {
+      setLoading(false);
       return setErrorMessage("All Fields are Mandatory")
     }
     try {
@@ -38,6 +39,7 @@ export default function SignUp() {
       if (data.success === false) {
         // console.log(data);
         setLoading(false);
+        console.log(data);
         return setErrorMessage(data.message);
       }
 
