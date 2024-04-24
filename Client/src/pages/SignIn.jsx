@@ -2,14 +2,20 @@ import React, { useState } from 'react'
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { Link,useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
+import { useDispatch , useSelector} from 'react-redux';
+import { signInFailure,signInStart,signInSucess } from '../redux/user/userSlice';
 
 // Sign Up function
 export default function SignIn() {
   // userstate
   let [formdata, setFormdata] = useState({});
-  let [errormessage, setErrorMessage] = useState(null);
-  let [loading, setLoading] = useState(false);
+
+  // let [errorMessage, setErrorMessage] = useState(null);
+  // let [loading, setLoading] = useState(false);
+
+  const {loading,error:errorMessage} = useSelector(state =>state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // function to handle and target formdata 
   function dataCollector(e) {
     setFormdata({ ...formdata, [e.target.id]: e.target.value.trim() })
@@ -19,13 +25,15 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    setErrorMessage(null); // setting value to default to null when function is called
-    setLoading(true);
+    // setting value to default to null when function is called
+    dispatch(signInStart());
 
     // Showing error for invalid inputs
     if (!formdata.username || !formdata.password) {
-      setLoading(false);
-      return setErrorMessage("All Fields are Mandatory")
+
+      // setLoading(false);
+      // return setErrorMessage("All Fields are Mandatory")
+      dispatch(signInFailure('All Fields are Mandetory'));
     }
 
     try {
@@ -39,19 +47,17 @@ export default function SignIn() {
       // if error from serverside
       if (data.success === false) {
         // console.log(data);
-        setLoading(false);
-        console.log(data);
-        return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
 
-      setLoading(false);
+      // setLoading(false);
       if(res.ok){
+        dispatch(signInSucess(data));
         navigate('/');
       }
 
     } catch (err) {
-      setErrorMessage(err);
-      setLoading(false);
+      dispatch(signInFailure(err.message));
     }
   }
 
@@ -114,9 +120,9 @@ export default function SignIn() {
             </Link>
           </div>
           {
-            errormessage && (
+            errorMessage && (
               <Alert className='mt-5' color='failure'>
-                {errormessage}
+                {errorMessage}
               </Alert>
             )
           }
