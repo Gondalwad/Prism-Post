@@ -3,13 +3,15 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Logo from './Logo'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { FaMoon } from 'react-icons/fa'
-import { useSelector } from 'react-redux';
+import { FaMoon , FaSun } from 'react-icons/fa'
+import { useSelector,useDispatch } from 'react-redux';
+import { toggleTheme } from '../redux/theme/themeSlice'
 
 export default function Header() {
     const location = useLocation().pathname;
     const { currentUser } = useSelector(state => state.user);
-
+    const {theme} = useSelector(state=>state.theme)
+    const dispatch = useDispatch();
 
     return (
         <Navbar className='border-b-2'>
@@ -29,8 +31,11 @@ export default function Header() {
             </Button>
 
             <div className='flex gap-2 md:order-2'>
-                <Button className='w-12 h-10 hidden sm:inline border border-grey-500 ' color='' pill >
-                    <FaMoon />
+                <Button className='w-12 h-10 hidden sm:inline border border-grey-500 ' color='' pill onClick={()=>dispatch(toggleTheme())} >
+                    {
+                        theme === 'dark' ?(<FaSun/>):(<FaMoon/>)
+                    }
+                    
                 </Button>
                 {
                     currentUser ? (
