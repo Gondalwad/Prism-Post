@@ -4,7 +4,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
 import { useDispatch , useSelector} from 'react-redux';
 import { signInFailure,signInStart,signInSucess } from '../redux/user/userSlice';
-
+import Oauth from '../components/Oauth';
 // Sign Up function
 export default function SignIn() {
   // userstate
@@ -111,6 +111,7 @@ export default function SignIn() {
                 ) : 'Sign In'
               }
             </Button>
+            <Oauth/>
           </form>
           {/* ############## Option to Sign IN ############## */}
           <div className='mt-2 text-sm'>

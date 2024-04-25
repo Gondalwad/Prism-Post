@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { Link,useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo'
+import Oauth from '../components/Oauth';
 
 // Sign Up function
 export default function SignUp() {
@@ -113,6 +114,7 @@ export default function SignUp() {
                 ) : 'Sign UP'
               }
             </Button>
+            <Oauth/>
           </form>
           {/* ############## Option to Sign IN ############## */}
           <div className='mt-2 text-sm'>
