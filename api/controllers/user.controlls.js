@@ -8,7 +8,6 @@ export default function test(req, res) {
 }
 
 export const updateUser = async (req, res, next) => {
-    console.log(req.user);
     if (req.user.id !== req.params.userID) {
         return next(errorHandler(401, 'Permission Denied'))
     }

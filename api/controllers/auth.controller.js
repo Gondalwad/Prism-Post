@@ -58,12 +58,12 @@ export const signin = async (req, res, next) => {
             return next(errorHandler(404, "Invalid Username or Password"));
         }
         // checking password
-        const validPass = await bcryptjs.compareSync(password, validUser.password);
+        const validPass = bcryptjs.compareSync(password, validUser.password);
         if (!validPass) {
             return next(errorHandler(404, "Invalid Username or Password"));
         }
 
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: validUser._id, isAdmin:validUser.isAdmin }, process.env.JWT_SECRET);
 
         const { password: pass, ...rest } = validUser._doc;
 
@@ -88,7 +88,7 @@ export const google = async (req, res, next) => {
         const validUser = await user.findOne({ email });
         if (validUser) {
 
-            const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: validUser._id, isAdmin:validUser.isAdmin }, process.env.JWT_SECRET);
             const { password: pass, ...rest } = validUser._doc;
 
             return res.status(200).cookie('access_token', token, {
@@ -108,7 +108,7 @@ export const google = async (req, res, next) => {
             });
 
             await newUser.save()
-            const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: newUser._id,isAdmin:newUser.isAdmin }, process.env.JWT_SECRET);
             const { password: pass, ...rest } = newUser._doc;
 
             return res.status(200).cookie('access_token', token, {
