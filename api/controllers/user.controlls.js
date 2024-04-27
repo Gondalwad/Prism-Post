@@ -25,7 +25,7 @@ export const updateUser = async (req, res, next) => {
         if (req.body.username.includes(' ')) {
             return next(errorHandler(400, 'Username Cannot contain Spaces'));
         }
-        if (req.body.username !== req.body.username.toLowerCase()){
+        if (req.body.username !== req.body.username.toLowerCase()) {
             return next(errorHandler(400, 'Username must be lowercase'));
         }
         if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
@@ -43,13 +43,13 @@ export const updateUser = async (req, res, next) => {
                     password: req.body.password,
                     profileImage: req.body.profileImage,
                 }
-            }, 
+            },
             { new: true }
         );
-        const {password,...rest} = updatedUser._doc;
+        const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
-    }catch(error){
+    } catch (error) {
         next(error);
     }
-    
+
 }
