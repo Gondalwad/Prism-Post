@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { TextInput, Button, Alert } from 'flowbite-react';
+import { TextInput, Button, Alert, Modal } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firbase'
-import {updateStart,updateSuccess,updateFailure} from '../redux/user/userSlice.js'
+import {updateStart,updateSuccess,updateFailure,deleteUserFailure,deleteUserStart,deleteUserSuccess} from '../redux/user/userSlice.js'
 import { useDispatch } from 'react-redux';
+import {HiOutlineExclamationCircle} from 'react-icons/hi'
 // ciculas progress bar
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -13,15 +14,18 @@ import 'react-circular-progressbar/dist/styles.css';
 
 export default function DashboardProfile() {
 
-  const { currentUser } = useSelector(state => state.user);
-  const [imageFile, setImageFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [imageUploadProgress, setImageUploadProgress] = useState(null);
-  const [imageFileUploadError, setImageFileUploadError] = useState(null);
-  const [imageFileUploading, setImageFileUploading] = useState(false);
-  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
-  const [updateUserError, setUpdateUserError] = useState(null);
-  const [formData,setFormData] = useState({});
+  const { currentUser } = useSelector(state => state.user); // to get current user from the device where logged in
+  const [imageFile, setImageFile] = useState(null); // to get the image file selected
+  const [imageUrl, setImageUrl] = useState(null); // to change the profile image url 
+  const [imageUploadProgress, setImageUploadProgress] = useState(null); // to show the image upload progress
+  const [imageFileUploadError, setImageFileUploadError] = useState(null); // to set functionlaity if image upload error occurs
+  const [imageFileUploading, setImageFileUploading] = useState(false); // to avoid conflits of updates while uploading image
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null); // to set functionality of update success
+  const [updateUserError, setUpdateUserError] = useState(null); // to set functionality if update user error occurs 
+  const [showModal, setShowModal] = useState(false);/// to open and close delete cofirm box
+  const [formData,setFormData] = useState({}); // to collect form data if updated
+
+
   const inputRef = useRef();
   const dispatch = useDispatch();
   
@@ -84,7 +88,7 @@ export default function DashboardProfile() {
       
     }
     
-//// Handle submission of form
+//// //////////////Handle submission of form
   const handleFormSubmit = async(e) => {
     e.preventDefault();
     
@@ -119,6 +123,26 @@ export default function DashboardProfile() {
     }catch(error){
       dispatch(updateFailure(error.message));
       setUpdateUserError(error.message);
+    }
+
+  }
+
+  //////////////////// Delete User Handler
+  const handleDeleteUser = async()=>{
+    setShowModal(false);
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+      } else {
+        dispatch(deleteUserSuccess(data));
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
 
   }
@@ -170,9 +194,10 @@ export default function DashboardProfile() {
       </form>
       <div className='flex flex-row justify-between text-red-400 text-xs mt-3'>
 
-        <span className='cursor-pointer'>Sign Out</span>
-        <span className='cursor-pointer'>Delete Account</span>
+        <span className='cursor-pointer' >Sign Out</span>
+        <span className='cursor-pointer' onClick={()=>setShowModal(true)}>Delete Account</span>
       </div>
+      {/* update reporter */}
       {updateUserSuccess && (
         <Alert color='success' className='mt-5'>
           {updateUserSuccess}
@@ -183,6 +208,27 @@ export default function DashboardProfile() {
           {updateUserError}
         </Alert>
       )}
+      {/*  Delte User Reporter */}
+      <Modal show={showModal} onClose = {()=>setShowModal(false)} popup side='md'>
+        <Modal.Header/>
+        <Modal.Body>
+          <div className="text-center">
+          <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDeleteUser}>
+                Yes, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+
+      </Modal>
     </div>
   )
 }
