@@ -4,9 +4,10 @@ import { TextInput, Button, Alert, Modal } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firbase'
-import {updateStart,updateSuccess,updateFailure,deleteUserFailure,deleteUserStart,deleteUserSuccess} from '../redux/user/userSlice.js'
+import {updateStart,updateSuccess,updateFailure,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSucess} from '../redux/user/userSlice.js'
 import { useDispatch } from 'react-redux';
 import {HiOutlineExclamationCircle} from 'react-icons/hi'
+// import { signOut } from './userActions/signOut.js';
 // ciculas progress bar
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -147,6 +148,23 @@ export default function DashboardProfile() {
 
   }
 
+  ////////////////////////  Sign Out User
+  const signOut = async()=>{
+    try {
+        const res = await fetch('/api/user/signout', {
+          method: 'POST',
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data.message);
+        } else {
+          dispatch(signOutSucess());
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+}
+
   return (
     <div className='flex flex-col max-w-xl w-full mx-auto'>
       <h1 className='text-center text-3xl my-7 p-3 font-semibold'>Profile</h1>
@@ -194,7 +212,7 @@ export default function DashboardProfile() {
       </form>
       <div className='flex flex-row justify-between text-red-400 text-xs mt-3'>
 
-        <span className='cursor-pointer' >Sign Out</span>
+        <span className='cursor-pointer' onClick={signOut} >Sign Out</span>
         <span className='cursor-pointer' onClick={()=>setShowModal(true)}>Delete Account</span>
       </div>
       {/* update reporter */}
