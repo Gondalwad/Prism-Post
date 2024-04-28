@@ -15,7 +15,7 @@ import 'react-circular-progressbar/dist/styles.css';
 
 export default function DashboardProfile() {
 
-  const { currentUser } = useSelector(state => state.user); // to get current user from the device where logged in
+  const { currentUser,loading } = useSelector(state => state.user); // to get current user from the device where logged in
   const [imageFile, setImageFile] = useState(null); // to get the image file selected
   const [imageUrl, setImageUrl] = useState(null); // to change the profile image url 
   const [imageUploadProgress, setImageUploadProgress] = useState(null); // to show the image upload progress
@@ -206,9 +206,20 @@ export default function DashboardProfile() {
         <TextInput type='text' defaultValue={currentUser.username} id='username'  onChange={formDataCollector}/>
         <TextInput type='text' defaultValue={currentUser.email} id='email' onChange={formDataCollector} />
         <TextInput type='password' placeholder='********' id='password' onChange={formDataCollector} />
-        <Button type='submit' gradientDuoTone='redToYellow' outline>
-          Update
+        <Button type='submit' gradientDuoTone='redToYellow' outline disabled={imageFileUploading || loading}>
+          {
+            loading ? 'Loading...' : 'Update'
+          }
         </Button>
+        {
+          currentUser.isAdmin && (
+            <Link to={'/create-post'}>
+            <Button type='button' gradientDuoTone='purpleToPink' className='w-full'>
+              Create Post 
+            </Button>
+            </Link>
+          )
+        }
       </form>
       <div className='flex flex-row justify-between text-red-400 text-xs mt-3'>
 
