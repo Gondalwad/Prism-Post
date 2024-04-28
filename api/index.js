@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import testRoute from './routes/user.route.js'
 import signup from './routes/auth.route.js'
+import postRoute from './routes/post.route.js'
 import cookieParser from 'cookie-parser';
 const app = express();
 
@@ -27,6 +28,7 @@ app.listen(port,()=>{
 //test api
 app.use('/api/user',testRoute);
 app.use('/api/user',signup);
+app.use('/api/post',postRoute);
 
 app.use((error,req,res,next)=>{
     const statusCode = error.statusCode || 500;
